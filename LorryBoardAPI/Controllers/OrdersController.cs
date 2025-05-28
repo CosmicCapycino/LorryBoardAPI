@@ -7,7 +7,7 @@ namespace LorryBoardAPI.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class OrderController(LorryBoardDbContext dbContext) : ControllerBase
+public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
 {
     private LorryBoardDbContext _dbContext = dbContext;
 
