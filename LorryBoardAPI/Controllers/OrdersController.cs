@@ -23,10 +23,21 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
         return Ok(await _dbContext.Orders.FindAsync(id));
     }
 
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteOrder(int id)
+    {
+        var order = await _dbContext.Orders.FindAsync(id);
+        if (order == null) return BadRequest("Order not found");
+
+        _dbContext.Orders.Remove(order);
+        await _dbContext.SaveChangesAsync();
+        return NoContent();
+    }
+
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromForm] CreateOrderForm order)
     {
-        Customer? customer = await _dbContext.Customers.Where(e => e.Id == order.Customer).FirstOrDefaultAsync();
+        Customer? customer = await _dbContext.Customers.Where(e => e.Name == order.Customer).FirstOrDefaultAsync();
         if(customer == null) return BadRequest("Customer not found");
         
         await _dbContext.Orders.AddAsync(new Order()
@@ -42,5 +53,26 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
         
         await _dbContext.SaveChangesAsync();
         return Ok(order);
+    }
+
+    [HttpPut("update/{id}")]
+    public async Task<IActionResult> UpdateOrder(int id, [FromForm] CreateOrderForm order)
+    {
+        Customer? customer = await _dbContext.Customers.Where(e => e.Name == order.Customer).FirstOrDefaultAsync();
+        if(customer == null) return BadRequest("Customer not found");
+        
+        var existingOrder = await _dbContext.Orders.FindAsync(id);
+        if (existingOrder == null) return BadRequest("Order not found");
+
+        existingOrder.Customer = customer;
+        existingOrder.ArrivalTime = order.ArrivalTime;
+        existingOrder.DepartureTime = order.DepartureTime;
+        existingOrder.Bay = order.Bay;
+        existingOrder.SafeToLoad = order.SafeToLoad;
+        existingOrder.HasKeys = order.HasKeys;
+        existingOrder.Status = order.Status;
+        
+        await _dbContext.SaveChangesAsync();
+        return NoContent();
     }
 }
