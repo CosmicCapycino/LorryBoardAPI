@@ -6,6 +6,17 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<LorryBoardDbContext>();
 builder.Services.AddControllers();
 
+var allowedOrigins = "_allowedOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowedOrigins,
+        policy  =>
+        {
+            policy.WithOrigins("http://localhost:8080");
+        });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -14,6 +25,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(allowedOrigins);
 app.MapControllers();
 
 app.Run();
