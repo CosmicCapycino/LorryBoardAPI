@@ -23,6 +23,17 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
         return Ok(await _dbContext.Orders.FindAsync(id));
     }
 
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteOrder(int id)
+    {
+        var order = await _dbContext.Orders.FindAsync(id);
+        if (order == null) return BadRequest("Order not found");
+
+        _dbContext.Orders.Remove(order);
+        await _dbContext.SaveChangesAsync();
+        return NoContent();
+    }
+
     [HttpPost("create")]
     public async Task<IActionResult> Create([FromForm] CreateOrderForm order)
     {
