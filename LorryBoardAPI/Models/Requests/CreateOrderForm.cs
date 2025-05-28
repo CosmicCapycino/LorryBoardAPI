@@ -2,7 +2,7 @@
 
 public class CreateOrderForm
 {
-    public int Customer { get; set; }
+    public string Customer { get; set; }
     public int Bay { get; set; }
     public DateTime ArrivalTime { get; set; }
     public DateTime DepartureTime { get; set; }
