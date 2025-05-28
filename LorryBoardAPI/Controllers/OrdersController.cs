@@ -14,7 +14,7 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
     [HttpGet("fetch/all")]
     public async Task<IActionResult> GetAll()
     {
-        return Ok(await _dbContext.Orders.ToListAsync());
+        return Ok(await _dbContext.Orders.Include(e => e.Customer).ToListAsync());
     }
 
     [HttpGet("fetch/{id}")]
@@ -33,7 +33,7 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
         {
             Customer = customer,
             ArrivalTime = order.ArrivalTime,
-            DepartureTime = order.ArrivalTime.AddHours(1),
+            DepartureTime = order.DepartureTime,
             Bay = order.Bay,
             SafeToLoad = order.SafeToLoad,
             HasKeys = order.HasKeys,

@@ -8,8 +8,8 @@ namespace LorryBoardAPI.Models;
 public class Order
 {
     [Key] public int Id { get; set; }
-    public int CustomerId { get; set; } // Foreign key property
-    [JsonIgnore] public Customer Customer { get; set; } = null!; // Navigation reference to Customer principal
+    [JsonIgnore] public int CustomerId { get; set; } // Foreign key property
+    public Customer Customer { get; set; } = null!; // Navigation reference to Customer principal
     public DateTime ArrivalTime { get; set; }
     public DateTime DepartureTime { get; set; }
     public int Bay;
