@@ -44,10 +44,13 @@ namespace LorryBoardAPI.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DepartureTime")
+                    b.Property<DateTime?>("DepartureTime")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("HasKeys")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("OnTime")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("SafeToLoad")
@@ -55,6 +58,9 @@ namespace LorryBoardAPI.Migrations
 
                     b.Property<string>("Status")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("TargetDepartureTime")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

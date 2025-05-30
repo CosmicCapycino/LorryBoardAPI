@@ -39,17 +39,33 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
     {
         Customer? customer = await _dbContext.Customers.Where(e => e.Name == order.Customer).FirstOrDefaultAsync();
         if(customer == null) return BadRequest("Customer not found");
-        
-        await _dbContext.Orders.AddAsync(new Order()
+
+        Order newOrder = new Order()
         {
             Customer = customer,
             ArrivalTime = order.ArrivalTime,
             DepartureTime = order.DepartureTime,
+            TargetDepartureTime = order.ArrivalTime.AddHours(1),
             Bay = order.Bay,
             SafeToLoad = order.SafeToLoad,
             HasKeys = order.HasKeys,
             Status = order.Status,
-        });
+        };
+        
+        if (newOrder.Status == "Complete")
+        {
+            if (order.DepartureTime <= newOrder.TargetDepartureTime)
+            {
+                newOrder.OnTime = true;
+            }
+            else
+            {
+                newOrder.OnTime = false;
+            }
+            newOrder.DepartureTime = order.DepartureTime;
+        }
+        
+        await _dbContext.Orders.AddAsync(newOrder);
         
         await _dbContext.SaveChangesAsync();
         return Ok(order);
@@ -66,11 +82,24 @@ public class OrdersController(LorryBoardDbContext dbContext) : ControllerBase
 
         existingOrder.Customer = customer;
         existingOrder.ArrivalTime = order.ArrivalTime;
-        existingOrder.DepartureTime = order.DepartureTime;
+        existingOrder.TargetDepartureTime = order.ArrivalTime.AddHours(1);
         existingOrder.Bay = order.Bay;
         existingOrder.SafeToLoad = order.SafeToLoad;
         existingOrder.HasKeys = order.HasKeys;
         existingOrder.Status = order.Status;
+
+        if (existingOrder.Status == "Complete")
+        {
+            if (order.DepartureTime <= existingOrder.TargetDepartureTime)
+            {
+                existingOrder.OnTime = true;
+            }
+            else
+            {
+                existingOrder.OnTime = false;
+            }
+            existingOrder.DepartureTime = order.DepartureTime;
+        }
         
         await _dbContext.SaveChangesAsync();
         return NoContent();
