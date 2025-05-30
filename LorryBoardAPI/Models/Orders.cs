@@ -11,9 +11,11 @@ public class Order
     [JsonIgnore] public int CustomerId { get; set; } // Foreign key property
     public Customer Customer { get; set; } = null!; // Navigation reference to Customer principal
     public DateTime ArrivalTime { get; set; }
-    public DateTime DepartureTime { get; set; }
+    public DateTime TargetDepartureTime { get; set; }
+    public DateTime? DepartureTime { get; set; }
     public int Bay;
     public bool SafeToLoad { get; set; }
     public bool HasKeys { get; set; }
     [Required] public string Status { get; set; }
+    public bool? OnTime { get; set; }
 }
